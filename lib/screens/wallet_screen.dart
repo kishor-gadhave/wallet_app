@@ -6,7 +6,7 @@ import 'custom_widget.dart';
 
 class WalletScreen extends StatelessWidget {
   final String network = 'devnet';
-  final String walletAddress = 'AxLXd6SsHBHB4HWhRMACuGsuvbtfEq1MsXQqhPaF6wkS';
+
 
   final TextEditingController _receiverAddressController = TextEditingController();
   final TextEditingController _amountController = TextEditingController();
@@ -34,7 +34,7 @@ class WalletScreen extends StatelessWidget {
                 children: [
                   GestureDetector(
                       onTap: () async {
-                        await walletProvider.fetchBalance(network, walletAddress,);
+                        await walletProvider.fetchBalance(network, );
                       },
                       child: const CustomWidget(
                         text: 'fetch balance',
@@ -43,7 +43,7 @@ class WalletScreen extends StatelessWidget {
                   const SizedBox(width: 40,),
                   GestureDetector(
                       onTap: () async {
-                        await walletProvider.requestAirdrop(network, walletAddress,1);
+                        await walletProvider.requestAirdrop(network,1);
                       },
                       child: const CustomWidget(
                         text: 'Airdrop',
@@ -80,7 +80,7 @@ class WalletScreen extends StatelessWidget {
                   final receiverAddress = _receiverAddressController.text;
                   final amount = double.parse(_amountController.text);
 
-                  await walletProvider.transferBalance(network, walletAddress, receiverAddress, amount);
+                  await walletProvider.transferBalance(network, receiverAddress, amount);
                 },
                 child: const Text('Transfer Balance'),
               ),
