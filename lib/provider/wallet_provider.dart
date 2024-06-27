@@ -7,21 +7,28 @@ class WalletProvider with ChangeNotifier {
   double _balance = 0.0;
   final String _baseUrl = 'https://api.socialverseapp.com';
   String? _token;
+  String? _walletAddress;
 
   WalletProvider() {
-    _loadToken();
+    _loadTokenAndWalletAddress();
   }
 
-  Future<void> _loadToken() async {
+  Future<void> _loadTokenAndWalletAddress() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     _token = prefs.getString('token');
+    _walletAddress = prefs.getString('walletAddress');
     notifyListeners();
   }
 
   double get balance => _balance;
+  String? get walletAddress => _walletAddress;
 
-  Future<void> fetchBalance(String network, String walletAddress) async {
-    final url = Uri.parse('$_baseUrl/solana/wallet/balance?network=$network&wallet_address=$walletAddress');
+  Future<void> fetchBalance(String network) async {
+    if (_walletAddress == null) {
+      throw Exception('Wallet address is not available');
+    }
+
+    final url = Uri.parse('$_baseUrl/solana/wallet/balance?network=$network&wallet_address=$_walletAddress');
     final response = await http.get(
       url,
       headers: {
@@ -38,7 +45,11 @@ class WalletProvider with ChangeNotifier {
     }
   }
 
-  Future<void> requestAirdrop(String network, String walletAddress, int amount) async {
+  Future<void> requestAirdrop(String network, int amount) async {
+    if (_walletAddress == null) {
+      throw Exception('Wallet address is not available');
+    }
+
     final url = Uri.parse('$_baseUrl/solana/wallet/airdrop');
     final response = await http.post(
       url,
@@ -47,20 +58,24 @@ class WalletProvider with ChangeNotifier {
         'Flic-Token': _token!,
       },
       body: json.encode({
-        'wallet_address': walletAddress,
+        'wallet_address': _walletAddress,
         'network': network,
         'amount': amount,
       }),
     );
 
     if (response.statusCode == 200) {
-      await fetchBalance(network, walletAddress);
+      await fetchBalance(network);
     } else {
       throw Exception('Failed to request airdrop');
     }
   }
 
-  Future<void> transferBalance(String network, String senderAddress, String receiverAddress, double amount) async {
+  Future<void> transferBalance(String network, String receiverAddress, double amount) async {
+    if (_walletAddress == null) {
+      throw Exception('Wallet address is not available');
+    }
+
     final url = Uri.parse('$_baseUrl/solana/wallet/transfer');
     final response = await http.post(
       url,
@@ -70,14 +85,14 @@ class WalletProvider with ChangeNotifier {
       },
       body: json.encode({
         'network': network,
-        'sender_address': senderAddress,
+        'sender_address': _walletAddress,
         'receiver_address': receiverAddress,
         'amount': amount,
       }),
     );
 
     if (response.statusCode == 200) {
-      await fetchBalance(network, senderAddress);
+      await fetchBalance(network);
     } else {
       throw Exception('Failed to transfer balance');
     }
