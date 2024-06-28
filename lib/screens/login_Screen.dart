@@ -34,7 +34,7 @@ class LoginScreen extends StatelessWidget {
               decoration: const InputDecoration(labelText: 'Email'),
             ),
 
-            SizedBox(height: 10,),
+            const SizedBox(height: 10,),
 
             TextField(
               controller: _passwordController,

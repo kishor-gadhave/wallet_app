@@ -12,12 +12,13 @@ class AuthProvider with ChangeNotifier {
   String? get token => _token;
   //String? get walletAddress => _walletAddress;
 
-  bool get isAuthenticated => _token != null;
+  //bool get isAuthenticated => _token != null;
 
   AuthProvider() {
     _loadTokenAndWalletAddress();
   }
 
+  //fetching and save data in shared_preference
   Future<void> _loadTokenAndWalletAddress() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     _token = prefs.getString('token');
@@ -25,6 +26,7 @@ class AuthProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  //managing login and fetch data from server
   Future<void> login(String email, String password) async {
     String url = 'https://api.socialverseapp.com/user/login';
 
@@ -54,6 +56,7 @@ class AuthProvider with ChangeNotifier {
     }
   }
 
+  //logout function
   Future<void> logout() async {
     _token = null;
     _walletAddress = null;

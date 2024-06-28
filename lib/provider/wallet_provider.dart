@@ -13,6 +13,7 @@ class WalletProvider with ChangeNotifier {
     _loadTokenAndWalletAddress();
   }
 
+  //fetching token and wallet address from share-preference
   Future<void> _loadTokenAndWalletAddress() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     _token = prefs.getString('token');
@@ -23,6 +24,7 @@ class WalletProvider with ChangeNotifier {
   double get balance => _balance;
   String? get walletAddress => _walletAddress;
 
+  //api call for fetching balance
   Future<void> fetchBalance(String network) async {
     if (_walletAddress == null) {
       throw Exception('Wallet address is not available');
@@ -45,6 +47,7 @@ class WalletProvider with ChangeNotifier {
     }
   }
 
+  // request airdrop function
   Future<void> requestAirdrop(String network, int amount) async {
     if (_walletAddress == null) {
       throw Exception('Wallet address is not available');
@@ -71,6 +74,7 @@ class WalletProvider with ChangeNotifier {
     }
   }
 
+  //api call for transfer money
   Future<void> transferBalance(String network, String receiverAddress, double amount) async {
     if (_walletAddress == null) {
       throw Exception('Wallet address is not available');

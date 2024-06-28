@@ -5,6 +5,9 @@ class CustomWidget extends StatelessWidget {
   final IconData icon;
 
 
+  //this for making ui simple
+
+  //creating customwidget for use anywhere in app
   const CustomWidget({super.key, required this.text, required this.icon,});
 
   @override
